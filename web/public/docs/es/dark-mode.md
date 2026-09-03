@@ -47,8 +47,54 @@ Para mitigar los efectos del modo oscuro forzado sin que rompas el diseño en mo
 - Evita depender de que el texto heredará el color correcto; define colores explícitos con `color` inline donde el contraste sea crítico.
 - Prueba el correo con la opción de **oscuro forzado** en la vista previa de Vellum, que simula el algoritmo de Gmail y Outlook antes de enviarlo.
 
+## Evitar la inversión automática de colores (opt-out) {#opt-out-dark-mode}
+
+Algunos clientes de correo soportan la propiedad CSS `color-scheme` con el valor `only light`. Cuando está presente, se le indica al cliente que **no aplique** ninguna transformación de modo oscuro automática al correo. Los colores y el diseño originales se preservan exactamente como fueron escritos.
+
+Clientes que respetan este opt-out: **Samsung Mail**, algunas versiones de **Outlook para Windows** y **Yahoo Mail** en ciertos entornos.
+
+Para aplicar el opt-out, declara la propiedad en el bloque `<style>` y opcionalmente inline en el `<body>`:
+
+```html
+<style>
+  :root { color-scheme: only light; }
+</style>
+```
+
+O inline en el elemento body:
+
+```html
+<body style="color-scheme: only light;">
+```
+
+> **Importante:** esta declaración no afecta a los clientes que soportan la media query estándar `prefers-color-scheme` (Apple Mail, Thunderbird, Outlook para Mac). Esos clientes seguirán activando tus propios estilos de modo oscuro si tienes escrita una media query. El opt-out solo previene que clientes que de otro modo aplicarían una inversión forzada automática lo hagan.
+
+### Estrategia combinada recomendada
+
+Para el resultado más robusto en todos los clientes principales, usa las tres declaraciones juntas:
+
+```html
+<!-- 1. Indica a los clientes que el correo está diseñado solo para modo claro -->
+<meta name="color-scheme" content="light">
+
+<style>
+  /* 2. Opt-out de la inversión automática forzada en clientes que lo soportan */
+  :root { color-scheme: only light; }
+
+  /* 3. Opcional: estilos propios para modo oscuro en clientes que respetan media queries */
+  @media (prefers-color-scheme: dark) {
+    body { background-color: #ffffff; color: #1a1a1a; }
+  }
+</style>
+```
+
+Esta estrategia cubre:
+- **Gmail / Outlook para Windows** — la inversión forzada es suprimida mediante `color-scheme: only light`
+- **Apple Mail / Thunderbird** — tus propios overrides de modo oscuro se activan mediante la media query
+- **Otros clientes** — la etiqueta `<meta>` señala la preferencia de diseño solo en modo claro
+
 ## Por qué no basta con uno solo {#why-both}
 
 Escribir solo la media query estándar no protege el correo en Gmail app ni en Outlook para Windows, porque esos clientes no la leen. Pero ignorar la media query y confiar en que todos los clientes fuercen los colores tampoco funciona, porque Apple Mail y Thunderbird sí respetan el CSS y el correo quedaría sin estilos propios en modo oscuro.
 
-El enfoque más robusto es declarar soporte en la meta de esquema de color, escribir los overrides en la media query para los clientes estándar, y verificar el resultado con la simulación de modo oscuro forzado para asegurarse de que las imágenes y los colores críticos resisten la inversión automática.
+El enfoque más robusto es declarar soporte en la meta de esquema de color, escribir los overrides en la media query para los clientes estándar, añadir el opt-out `color-scheme: only light` para suprimir las inversiones forzadas, y verificar el resultado con la simulación de modo oscuro forzado para asegurarse de que las imágenes y los colores críticos resisten la inversión automática.

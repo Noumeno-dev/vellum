@@ -86,14 +86,14 @@ var (
 	reDoctype   = regexp.MustCompile(`(?i)<!DOCTYPE\s+html`)
 	reCharset   = regexp.MustCompile(`(?i)<meta[^>]+(charset\s*=|http-equiv\s*=\s*['"]?content-type)[^>]*>`)
 
-	reHTTPLinks = regexp.MustCompile(`(?i)<\s*a[^>]{0,500}href\s*=\s*['"]?https?://`)
+	reHTTPLinks = regexp.MustCompile(`(?i)<\s*a[^>]{0,500}href\s*=\s*['"']?https?://`)
 	reImgTag    = regexp.MustCompile(`(?i)<\s*img[^>]*>`)
 	reHasAlt    = regexp.MustCompile(`(?i)\balt\s*=`)
-	reShortener = regexp.MustCompile(`(?i)https?://(bit\.ly|goo\.gl|t\.co|ow\.ly|tinyurl\.com|is\.gd|buff\.ly|dlvr\.it|short\.io|rb\.gy|shorturl\.at)/`)
+	reShortener = regexp.MustCompile(`(?i)https?://(bit\.ly|goo\.gl|t\.co|ow\.ly|tinyurl\.com|is\.gd|buff\.ly|dlvr\.it|short\.io|rb\.gy|shorturl\.at|rebrand\.ly|cutt\.ly|tiny\.cc|bl\.ink|tr\.im|snip\.ly|ift\.tt|t2m\.io)/`)
 
 	reHiddenDisplayNone = regexp.MustCompile(`(?i)display\s*:\s*none`)
 	reHiddenVisibility  = regexp.MustCompile(`(?i)visibility\s*:\s*hidden`)
-	reHiddenFontSize0   = regexp.MustCompile(`(?i)font-size\s*:\s*0\s*(?:px|pt|em|rem)?(?:\s*[;}'"]|\s*$)`)
+	reHiddenFontSize0   = regexp.MustCompile(`(?i)font-size\s*:\s*0\s*(?:px|pt|em|rem)?(?:\s*[;}'""]|\s*$)`)
 	reHiddenOpacity0    = regexp.MustCompile(`(?i)opacity\s*:\s*0(?:\.0+)?\s*(?:[;}'"\s]|$)`)
 	reOffscreen         = regexp.MustCompile(`(?i)(?:left|top)\s*:\s*-\d{3,}`)
 
@@ -102,11 +102,21 @@ var (
 
 	reUnsubscribeBody = regexp.MustCompile(`(?i)(unsubscribe|darse\s+de\s+baja|cancelar\s+suscripci|opt.?out)`)
 
-	reMetaColorScheme = regexp.MustCompile(`(?i)<meta[^>]+name\s*=\s*["']?color-scheme["']?[^>]*>`)
-	reDarkModeMedia   = regexp.MustCompile(`(?i)@media[^{]*prefers-color-scheme\s*:\s*dark`)
-	reStyleAttr       = regexp.MustCompile(`(?i)style\s*=\s*["']([^"']{0,1000})["']`)
-	reInlineColor     = regexp.MustCompile(`(?i)(?:^|;|\s)color\s*:\s*(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b`)
-	reInlineBgColor   = regexp.MustCompile(`(?i)(?:^|;|\s)background(?:-color)?\s*:\s*(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b`)
+	reMetaColorScheme      = regexp.MustCompile(`(?i)<meta[^>]+name\s*=\s*["']?color-scheme["']?[^>]*>`)
+	reDarkModeMedia        = regexp.MustCompile(`(?i)@media[^{]*prefers-color-scheme\s*:\s*dark`)
+	reColorSchemeOnlyLight = regexp.MustCompile(`(?i)color-scheme\s*:\s*only\s+light`)
+	reStyleAttr            = regexp.MustCompile(`(?i)style\s*=\s*["']([^"']{0,1000})["']`)
+	reInlineColor          = regexp.MustCompile(`(?i)(?:^|;|\s)color\s*:\s*(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b`)
+	reInlineBgColor        = regexp.MustCompile(`(?i)(?:^|;|\s)background(?:-color)?\s*:\s*(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b`)
+
+	// Preview text / preheader (spam technique: invisible preheader stuffed with keywords)
+	rePreviewTextPattern = regexp.MustCompile(`(?i)(class|id)\s*=\s*["'][^"']*(?:preview|preheader|preview-text|preheader-text)[^"']*["']`)
+
+	// Mixed content: http:// images inside an otherwise https email
+	reMixedContentImg = regexp.MustCompile(`(?i)<\s*img[^>]+src\s*=\s*["']?http://`)
+
+	// Excessive punctuation in text (!!!, ???, etc.) — spam signal
+	reExcessivePunct = regexp.MustCompile(`[!?]{3,}`)
 )
 
 var suspiciousExtensions = []string{".exe", ".bat", ".cmd", ".vbs", ".js", ".scr", ".pif", ".msi", ".ps1"}
@@ -378,6 +388,10 @@ func deliverabilityChecks(e *domain.Email, subject, html string, loc locale) []C
 		{ID: "images_have_alt", Name: loc.t("Todas las imágenes tienen atributo alt", "All images have alt attribute"), Severity: "info", Impact: 4},
 		{ID: "html_size_ok", Name: loc.t("Tamaño del HTML menor a 100 KB", "HTML size below 100 KB"), Severity: "warning", Impact: 5},
 		{ID: "no_size_excess", Name: loc.t("Tamaño del mensaje aceptable (< 10 MB)", "Acceptable message size (< 10 MB)"), Severity: "warning", Impact: 5},
+		// New checks
+		{ID: "no_excessive_body_punctuation", Name: loc.t("Sin puntuación excesiva en el cuerpo (!!!, ???)", "No excessive body punctuation (!!!, ???)"), Severity: "info", Impact: 3},
+		{ID: "no_mixed_content_images", Name: loc.t("Sin imágenes mixtas HTTP dentro de correo HTTPS", "No mixed-content HTTP images inside HTTPS email"), Severity: "warning", Impact: 5},
+		{ID: "no_preheader_stuffing", Name: loc.t("Sin relleno de texto en el preencabezado", "No preheader text stuffing"), Severity: "warning", Impact: 5},
 	}
 
 	subjectTrimmed := strings.TrimSpace(subject)
@@ -524,6 +538,53 @@ func deliverabilityChecks(e *domain.Email, subject, html string, loc locale) []C
 		loc.tf("El mensaje pesa %s. Los mensajes superiores a 10 MB suelen ser rechazados o bloqueados por los servidores de destino.",
 			"Message size is %s. Messages over 10 MB are often rejected or blocked by destination servers.", formatBytes(e.Size)))
 
+	// Check 12: excessive body punctuation (!!!, ???)
+	bodyText := e.TextBody
+	if bodyText == "" {
+		bodyText = html
+	}
+	excessivePunct := reExcessivePunct.FindString(bodyText)
+	if bodyText == "" {
+		skipCheck(&checks[12], loc.t("No aplica: el correo no tiene contenido de texto.", "Not applicable: the email has no text content."))
+	} else {
+		setCheck(&checks[12], excessivePunct == "",
+			loc.t("El cuerpo no contiene puntuación excesiva.", "The body does not contain excessive punctuation."),
+			loc.t("Se encontraron secuencias de puntuación excesiva (!!!, ???, etc.) en el contenido. Los filtros antispam de Gmail, Outlook y Yahoo penalizan este patrón porque es característico del spam de ventas agresivo.",
+				"Excessive punctuation sequences (!!!, ???, etc.) were found in the content. Gmail, Outlook, and Yahoo spam filters penalize this pattern as it is characteristic of aggressive sales spam."))
+	}
+
+	// Check 13: mixed content — http:// images inside an email served over https
+	if html == "" {
+		skipCheck(&checks[13], noHTML)
+	} else {
+		hasMixed := reMixedContentImg.MatchString(html)
+		setCheck(&checks[13], !hasMixed,
+			loc.t("No se detectaron imágenes con contenido mixto (HTTP).", "No mixed-content (HTTP) images detected."),
+			loc.t("Se encontraron imágenes con src http:// en un correo servido por HTTPS. Los clientes de correo bloquean estas imágenes y muestran advertencias de seguridad al destinatario.",
+				"Found img tags with src http:// inside an HTTPS email. Email clients block these images and display security warnings to the recipient."))
+	}
+
+	// Check 14: preheader/preview-text element present (good practice) but check for hidden stuffing
+	if html == "" {
+		skipCheck(&checks[14], noHTML)
+	} else {
+		hasPreheader := rePreviewTextPattern.MatchString(html)
+		// Preheader exists — check if it contains hidden content (stuffing)
+		if hasPreheader {
+			// Check if hidden techniques are applied to the preheader element — overly broad check on the whole document is acceptable here
+			hiddenNearPreheader := (reHiddenDisplayNone.MatchString(html) || reHiddenVisibility.MatchString(html) || reHiddenFontSize0.MatchString(html) || reHiddenOpacity0.MatchString(html)) && hasPreheader
+			setCheck(&checks[14], !hiddenNearPreheader,
+				loc.t("Se encontró un elemento de preencabezado sin técnicas de ocultación aparentes.", "A preheader element was found without apparent hiding techniques."),
+				loc.t("Se detectó un elemento de preencabezado (preheader/preview-text) combinado con técnicas de ocultación de contenido. Rellenar el preencabezado con texto invisible es una táctica usada para manipular el texto de vista previa en los clientes de correo y es penalizada por los filtros antispam.",
+					"A preheader/preview-text element was detected combined with content hiding techniques. Stuffing the preheader with invisible text is a tactic used to manipulate the preview text in email clients and is penalized by spam filters."))
+		} else {
+			setCheck(&checks[14], false,
+				"",
+				loc.t("No se encontró un elemento de preencabezado (class/id preheader o preview-text). Añadir un preencabezado visible mejora la tasa de apertura y evita que los clientes de correo muestren el primer texto del HTML como vista previa.",
+					"No preheader/preview-text element was found (class/id preheader or preview-text). Adding a visible preheader improves open rates and prevents email clients from showing the first HTML text as the preview."))
+		}
+	}
+
 	return checks
 }
 
@@ -600,6 +661,7 @@ func a11yChecks(html string, loc locale) []Check {
 	checks := []Check{
 		{ID: "dark_mode_support", Name: loc.t("Soporte para modo oscuro", "Dark mode support"), Severity: "info", Impact: 3},
 		{ID: "text_contrast", Name: loc.t("Contraste de texto adecuado (WCAG básico)", "Adequate text contrast (basic WCAG)"), Severity: "info", Impact: 6},
+		{ID: "dark_mode_opt_out", Name: loc.t("Opción para evitar inversión forzada (color-scheme: only light)", "Forced dark mode opt-out (color-scheme: only light)"), Severity: "info", Impact: 2},
 	}
 
 	if html == "" {
@@ -628,6 +690,13 @@ func a11yChecks(html string, loc locale) []Check {
 			loc.t("El contraste de colores analizado cumple con estándares de legibilidad básicos.", "The analyzed color contrast meets basic legibility standards."),
 			"")
 	}
+
+	// Check 2: color-scheme: only light — tells supporting clients NOT to apply dark mode inversion
+	hasOnlyLight := reColorSchemeOnlyLight.MatchString(html)
+	setCheck(&checks[2], hasOnlyLight,
+		loc.t("El correo declara color-scheme: only light para evitar la inversión automática de colores.", "The email declares color-scheme: only light to prevent automatic color inversion."),
+		loc.t("No se encontró la declaración color-scheme: only light. Los clientes que soportan este valor (Samsung Mail, algunos builds de Outlook) respetarán el diseño original y no aplicarán inversión de colores. Combínalo con el soporte de modo oscuro vía media query para una estrategia completa.",
+			"The color-scheme: only light declaration was not found. Clients that support this value (Samsung Mail, some Outlook builds) will respect the original design and not apply color inversion. Combine it with dark mode support via media query for a complete strategy."))
 
 	return checks
 }

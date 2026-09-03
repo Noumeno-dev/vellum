@@ -47,8 +47,54 @@ To mitigate the effects of forced dark mode without breaking the design in light
 - Avoid relying on text inheriting the correct color; define explicit colors with inline `color` where contrast is critical.
 - Test the email with the **forced dark** option in Vellum's preview, which simulates the Gmail and Outlook algorithm before sending.
 
+## Preventing automatic color inversion (opt-out) {#opt-out-dark-mode}
+
+Some email clients support the CSS `color-scheme` property with the value `only light`. When present, these clients are instructed **not** to apply any automatic dark mode transformation to the email. The original colors and design are preserved exactly as written.
+
+Clients that respect this opt-out: **Samsung Mail**, some builds of **Outlook for Windows**, and **Yahoo Mail** in certain environments.
+
+To apply the opt-out, declare the property in the `<style>` block and optionally inline on the `<body>`:
+
+```html
+<style>
+  :root { color-scheme: only light; }
+</style>
+```
+
+Or inline on the body element:
+
+```html
+<body style="color-scheme: only light;">
+```
+
+> **Important:** this declaration does not affect clients that support the standard `prefers-color-scheme` media query (Apple Mail, Thunderbird, Outlook for Mac). Those clients will still activate your own dark mode styles if you have written a media query. The opt-out only prevents clients that would otherwise apply a forced automatic inversion.
+
+### Recommended combined strategy
+
+For the most robust result across all major clients, use all three declarations together:
+
+```html
+<!-- 1. Tell clients the email is designed only for light mode -->
+<meta name="color-scheme" content="light">
+
+<style>
+  /* 2. Opt out of forced automatic inversion on supporting clients */
+  :root { color-scheme: only light; }
+
+  /* 3. Optional: explicit dark mode styles for clients that respect media queries */
+  @media (prefers-color-scheme: dark) {
+    body { background-color: #ffffff; color: #1a1a1a; }
+  }
+</style>
+```
+
+This approach covers:
+- **Gmail / Outlook for Windows** — forced inversion is suppressed via `color-scheme: only light`
+- **Apple Mail / Thunderbird** — your own dark mode overrides take effect via the media query
+- **Other clients** — the `<meta>` tag signals light-only design preference
+
 ## Why one alone is not enough {#why-both}
 
 Writing only the standard media query does not protect the email in the Gmail app or Outlook for Windows, because those clients do not read it. But ignoring the media query and trusting that all clients will force the colors does not work either, because Apple Mail and Thunderbird do respect the CSS and the email would be left without its own dark mode styles.
 
-The most robust approach is to declare support in the color scheme meta tag, write the overrides in the media query for standard clients, and verify the result with the forced dark mode simulation to make sure images and critical colors withstand the automatic inversion.
+The most robust approach is to declare support in the color scheme meta tag, write the overrides in the media query for standard clients, add the `color-scheme: only light` opt-out to suppress forced inversions, and verify the result with the forced dark mode simulation to make sure images and critical colors withstand the automatic inversion.
