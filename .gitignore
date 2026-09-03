@@ -9,7 +9,7 @@ vendor/
 # ── Base de datos BoltDB ─────────────────────────────────────────────────────
 *.db
 *.bolt
-data/
+/data/
 
 # ── Frontend – dependencias ──────────────────────────────────────────────────
 web/node_modules/

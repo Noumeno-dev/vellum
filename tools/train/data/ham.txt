@@ -1,0 +1,142 @@
+Tu pedido número 45231 ha sido confirmado y está siendo procesado por nuestro equipo
+Restablece tu contraseña haciendo clic en el enlace adjunto en las próximas 24 horas
+Tu factura del mes de marzo está disponible en tu cuenta para su descarga
+Bienvenido a nuestro servicio tu cuenta ha sido creada y verificada correctamente
+Notificación de envío tu paquete fue despachado el número de seguimiento es 789XYZ
+Tu suscripción mensual se ha renovado automáticamente el pago fue procesado con éxito
+Hemos recibido tu solicitud de soporte y te responderemos en un plazo de 24 horas
+Tu código de verificación es 483921 no lo compartas con nadie por seguridad
+Actualización de términos y condiciones te informamos sobre cambios en nuestra política
+Tu sesión fue iniciada desde un nuevo dispositivo si no eres tú contacta soporte
+Resumen mensual de actividad en tu cuenta del mes de marzo disponible para descargar
+Se detectó un intento de inicio de sesión inusual en tu cuenta verifica tu identidad
+Tu archivo ha sido subido correctamente y está disponible en tu espacio de almacenamiento
+Recordatorio tu pago vence en 3 días para evitar interrupciones actualiza tu información
+El informe mensual de tu proyecto está listo para ser revisado en el panel de control
+Your order number 45231 has been confirmed and is being processed by our team
+Reset your password by clicking the link below within the next 24 hours
+Your March invoice is available in your account for download
+Welcome to our service your account has been created and verified successfully
+Shipping notification your package was dispatched tracking number is 789XYZ
+Your monthly subscription has been renewed automatically payment was processed
+We received your support request and will respond within 24 hours
+Your verification code is 483921 do not share it with anyone for security
+Terms and conditions update we are informing you about changes to our policy
+Your session was started from a new device if this was not you contact support
+Monthly activity summary for your account for March available for download
+An unusual sign in attempt was detected on your account please verify your identity
+Your file was uploaded successfully and is available in your storage space
+Reminder your payment is due in 3 days to avoid interruptions update your info
+Your monthly project report is ready to review in your control panel
+Seu pedido número 45231 foi confirmado e está sendo processado pela nossa equipe
+Redefina sua senha clicando no link abaixo nas próximas 24 horas por segurança
+Sua fatura de março está disponível na sua conta para download imediato
+Bem-vindo ao nosso serviço sua conta foi criada e verificada com sucesso
+Notificação de envio seu pacote foi despachado o número de rastreamento é 789XYZ
+Sua assinatura mensal foi renovada automaticamente o pagamento foi processado
+Recebemos sua solicitação de suporte e responderemos em até 24 horas
+Seu código de verificação é 483921 não compartilhe com ninguém por segurança
+Atualização de termos e condições informamos sobre mudanças em nossa política
+Sua sessão foi iniciada em um novo dispositivo se não foi você entre em contato
+Resumo mensal de atividades da sua conta de março disponível para baixar
+Foi detectada uma tentativa de login incomum na sua conta verifique sua identidade
+Tu cuenta bancaria recibirá un depósito en los próximos 2 días hábiles
+El equipo de soporte ha resuelto tu ticket número 8821 revisa la respuesta
+Tu contrato digital ha sido firmado correctamente y enviado a tu correo
+Accede al nuevo panel de administración con tus credenciales habituales
+Se ha actualizado la configuración de seguridad de tu cuenta correctamente
+Tu reporte de gastos del primer trimestre está disponible para revisión
+El certificado digital adjunto es válido hasta el 31 de diciembre del año en curso
+Notificamos que la reunión programada para el viernes ha sido reagendada para el lunes
+Your bank account will receive a deposit within the next 2 business days
+The support team has resolved your ticket number 8821 please review the response
+Your digital contract has been signed correctly and sent to your email
+Access the new administration panel with your usual credentials
+The security settings for your account have been updated successfully
+Your first quarter expense report is available for review in the portal
+The attached digital certificate is valid until December 31 of the current year
+We are notifying you that the meeting scheduled for Friday has been rescheduled
+La descarga de tu documento está lista puedes acceder desde el enlace seguro adjunto
+Se ha realizado una transacción en tu tarjeta por 150 euros si no reconoces el cargo llama
+Recordatorio de evento tu cita está confirmada para el próximo martes a las 10am
+Tu perfil de usuario ha sido actualizado con la nueva información proporcionada
+Nuevo mensaje de tu equipo de trabajo disponible en la plataforma de colaboración
+Se ha añadido un nuevo miembro a tu proyecto de trabajo en equipo notificamos el cambio
+El sistema de monitoreo ha detectado un error en el servicio y ya fue corregido
+Tu plan actual vence en 30 días renueva ahora para no perder el acceso a tus datos
+Your document download is ready you can access it from the secure link attached
+A transaction of 150 euros was made on your card if you do not recognize it call
+Event reminder your appointment is confirmed for next Tuesday at 10am
+Your user profile has been updated with the new information provided
+New message from your work team available on the collaboration platform
+A new member has been added to your work project we are notifying of the change
+The monitoring system detected an error in the service and it was already fixed
+Your current plan expires in 30 days renew now to keep access to your data
+Informe de seguridad mensual adjunto en PDF para revisión interna del equipo de TI
+La API de integración ha sido actualizada revisa la documentación técnica adjunta
+Tu solicitud de vacaciones ha sido aprobada por el departamento de recursos humanos
+La conferencia anual de desarrolladores está programada para el próximo mes confirma asistencia
+Se ha emitido la factura número 2024-0891 por los servicios del mes de febrero
+Monthly security report attached in PDF for internal review by the IT team
+The integration API has been updated please review the attached technical documentation
+Your vacation request has been approved by the human resources department
+The annual developer conference is scheduled for next month please confirm attendance
+Invoice number 2024-0891 has been issued for the services rendered in February
+
+# --- SaaS Invoice Notifications ---
+Your Stripe invoice INV-2024-0034 for 49 dollars has been paid successfully thank you
+Factura de Slack para el mes de agosto por 87 euros ha sido procesada correctamente
+Sua fatura do plano Pro na HubSpot no valor de R320 foi paga com sucesso
+Your GitHub Teams subscription invoice for September is now available in your billing portal
+
+# --- HR and Payroll Notifications ---
+Your payslip for the period ending August 31 is now available in the HR portal
+Nómina del mes de agosto disponible en el portal de recursos humanos accede para descargar
+Seu holerite de agosto está disponível no portal de RH acesse com suas credenciais
+Open enrollment for employee benefits begins on October 1 please review your options
+
+# --- Developer Tool Alerts ---
+Build failed on branch main at commit a3f9c21 check the CI logs for details
+Deployment to production succeeded all health checks passed version 3.4.1 is live
+El pipeline de CI ha fallado en la rama feature slash auth revisa el log de errores
+Deploy concluído com sucesso na versão 2.1.0 todos os testes passaram sem erros
+Your Sentry project detected 15 new errors in the last hour review the error dashboard
+PagerDuty alert the API gateway response time exceeded threshold investigate immediately
+
+# --- Calendar / Meeting Invites and Updates ---
+Meeting invitation quarterly business review Thursday October 10 at 2pm please confirm
+La reunión de equipo del lunes ha sido reprogramada para el miércoles a las 11am
+Convite de reunião revisão mensal da equipe sexta-feira às 14h sala de conferências B
+Your calendar event product sync has been updated new time is 3pm please review
+
+# --- Bank / Payment Confirmations (Neutral) ---
+Your transfer of 250 dollars to account ending in 4821 was completed successfully today
+A payment of 1200 euros was received in your account on September 2 reference 9921BX
+Transferência de R500 realizada com sucesso para a conta informada em 02 de setembro
+Your credit card statement for August is now available please review your transactions
+
+# --- Educational Institution Notifications ---
+Your course enrollment for Introduction to Data Science has been confirmed starts October 7
+Matrícula confirmada en el curso de Programación en Python inicio el próximo lunes
+Sua matrícula no curso de Design Gráfico foi confirmada aulas começam na próxima semana
+Final exam schedule for the fall semester is now published please check your student portal
+
+# --- Healthcare Appointment Reminders ---
+Reminder your appointment with Dr. Garcia is confirmed for September 10 at 9am
+Recordatorio su cita médica con el Dr. López es el martes 12 de septiembre a las 10am
+Lembrete sua consulta com o Dr. Oliveira está confirmada para dia 15 de setembro às 9h
+Your prescription refill is ready for pickup at your pharmacy please bring your ID
+
+# --- Internal Team Communications ---
+The sprint planning session notes have been posted to Confluence please review before Friday
+Resumen de la retrospectiva del sprint disponible en Notion compártelo con tu equipo
+Resumo da reunião de planejamento disponível no Confluence acesse e adicione comentários
+Your pull request has been approved and merged into the main branch by the reviewer
+Team lunch is scheduled for Friday at noon the reservation is at Rosario on Fifth Street
+
+# --- Extra ham examples to reach 40 ---
+Your two-factor authentication was successfully enabled on your account
+Se habilitó con éxito la autenticación de dos factores en tu cuenta de usuario
+A autenticação de dois fatores foi ativada com sucesso na sua conta
+Your weekly digest from the developer newsletter is ready to read
+Tu resumen semanal de actividad en GitHub está disponible para revisar
