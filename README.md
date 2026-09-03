@@ -58,6 +58,7 @@ Use the following configuration to deploy Vellum using our official pre-built im
 services:
   vellum:
     image: docker.io/gerbo67/vellum:latest  # Or use ghcr.io/gerbo67/vellum:latest
+    pull_policy: always
     container_name: vellum
     restart: unless-stopped
     ports:
