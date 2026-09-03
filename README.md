@@ -66,6 +66,7 @@ services:
       - "2525:2525"  # SMTP Port
     volumes:
       - vellum_data:/data
+    pull_policy: always # Always pull latest image updates
     environment:
       VELLUM_PORT: 8025
       VELLUM_SMTP_PORT: 2525
@@ -81,6 +82,93 @@ volumes:
   vellum_data:
     driver: local
 ```
+
+---
+
+### Connecting Your Application (SMTP Settings)
+
+Point your application, staging server, or local environment to Vellum using the following SMTP parameters:
+
+| Parameter | Value | Description |
+| :--- | :--- | :--- |
+| **Host** | `localhost` (or your Docker host IP / domain) | Address where Vellum is running |
+| **Port** | `2525` | Default SMTP port (or whatever you mapped) |
+| **Authentication** | None / Optional | Any username and password will be accepted |
+| **Encryption / TLS** | None (Plain) or STARTTLS | No TLS certificate setup required for dev/test |
+
+#### How Project Routing Works (`Senders`)
+
+Vellum isolates emails by project using the sender address (`From:`):
+
+1. **Create a Project**: In the Vellum web dashboard, click **New Project** (e.g. *"Acme App"*).
+2. **Assign Senders**: In the **Senders** field, enter the addresses your application sends from, separated by commas (e.g. `notifications@acme.local, billing@acme.local`).
+   > 💡 **Tip:** You do not need to own or configure DNS for these domains. Any fictional or real domain (e.g. `@acme.local`, `@company.test`, `@myapp.com`) works out of the box.
+3. **Send from your Code**: Set your mail client's `From:` address to one of the registered project senders.
+4. **Recipients (`To:`, `Cc:`, `Bcc:`)**: Can be literally any destination (e.g. `client@gmail.com`, `qa-test@random.org`). Vellum intercepts all outbound traffic safely.
+
+#### Example Configuration in Applications
+
+**Environment Variables (.env)**
+```env
+SMTP_HOST=localhost
+SMTP_PORT=2525
+SMTP_USER=
+SMTP_PASSWORD=
+MAIL_FROM_ADDRESS=notifications@acme.local
+MAIL_FROM_NAME="Acme Platform"
+```
+
+**Node.js (Nodemailer)**
+```javascript
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  host: "localhost",
+  port: 2525,
+  secure: false, // TLS is not required
+});
+
+await transporter.sendMail({
+  from: '"Acme App" <notifications@acme.local>', // Must match a registered Project Sender
+  to: "customer@example.com",                    // Any recipient
+  subject: "Account Confirmation",
+  text: "Welcome to Acme App! Confirm your account: https://acme.local/verify",
+  html: "<h1>Welcome!</h1><p>Confirm your account by clicking the link.</p>",
+});
+```
+
+**Python**
+```python
+import smtplib
+from email.message import EmailMessage
+
+msg = EmailMessage()
+msg.set_content("Hello from Python testing Vellum!")
+msg["Subject"] = "Test Notification"
+msg["From"] = "notifications@acme.local"  # Must match a Project Sender
+msg["To"] = "anyone@example.com"          # Any recipient
+
+with smtplib.SMTP("localhost", 2525) as server:
+    server.send_message(msg)
+```
+
+**C# (.NET / MailKit)**
+```csharp
+using MailKit.Net.Smtp;
+using MimeKit;
+
+var message = new MimeMessage();
+message.From.Add(new MailboxAddress("Acme App", "notifications@acme.local"));
+message.To.Add(new MailboxAddress("Test User", "user@example.com"));
+message.Subject = "Vellum Verification Test";
+message.Body = new TextPart("plain") { Text = "Testing email capture in Vellum." };
+
+using var client = new SmtpClient();
+await client.ConnectAsync("localhost", 2525, false);
+await client.SendAsync(message);
+await client.DisconnectAsync(true);
+```
+
 
 ---
 
