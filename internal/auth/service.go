@@ -929,3 +929,18 @@ func (s *Service) EnabledProviders() []domain.ProviderName {
 	}
 	return result
 }
+
+// ProviderLabels returns a map of provider names to their configured display names.
+func (s *Service) ProviderLabels() map[domain.ProviderName]string {
+	cfgs, err := s.db.ListAuthProviderConfigs()
+	labels := make(map[domain.ProviderName]string)
+	if err != nil {
+		return labels
+	}
+	for _, c := range cfgs {
+		if c.DisplayName != "" {
+			labels[c.Name] = c.DisplayName
+		}
+	}
+	return labels
+}

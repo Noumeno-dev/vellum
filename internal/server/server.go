@@ -235,12 +235,14 @@ func (s *Server) handleSetupStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	enabled := s.authSvc.EnabledProviders()
+	labels := s.authSvc.ProviderLabels()
 	jsonOK(w, map[string]interface{}{
 		"setup_complete":    cfg.SetupComplete,
 		"has_users":         hasUsers,
 		"auth_method":       cfg.AuthMethod,
 		"oidc_enabled":      s.cfg.OIDCEnabled(),
 		"enabled_providers": enabled,
+		"provider_labels":   labels,
 	})
 }
 

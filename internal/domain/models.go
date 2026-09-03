@@ -105,6 +105,7 @@ type AccessPolicy struct {
 type AuthProviderConfig struct {
 	Name         ProviderName   `json:"name"`
 	Enabled      bool           `json:"enabled"`
+	DisplayName  string         `json:"display_name,omitempty"` // Custom name for the login button
 	ClientID     string         `json:"client_id,omitempty"`
 	ClientSecret string         `json:"client_secret,omitempty"`
 	IssuerURL    string         `json:"issuer_url,omitempty"` // OIDC only

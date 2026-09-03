@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/loomtek/vellum/internal/domain"
@@ -20,7 +21,15 @@ func newOIDCProvider(ctx context.Context, cfg domain.AuthProviderConfig, baseURL
 	}
 	op, err := oidc.NewProvider(ctx, cfg.IssuerURL)
 	if err != nil {
-		return nil, nil, fmt.Errorf("oidc: discover provider: %w", err)
+		// Attempt to gracefully handle common trailing slash mismatches
+		if strings.HasSuffix(cfg.IssuerURL, "/") {
+			op, err = oidc.NewProvider(ctx, strings.TrimSuffix(cfg.IssuerURL, "/"))
+		} else {
+			op, err = oidc.NewProvider(ctx, cfg.IssuerURL+"/")
+		}
+		if err != nil {
+			return nil, nil, fmt.Errorf("oidc: discover provider: %w", err)
+		}
 	}
 	o2cfg := &oauth2.Config{
 		ClientID:     cfg.ClientID,

@@ -147,7 +147,7 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-3">
                     <span className="text-muted-foreground">{providerIcons[pi.provider]}</span>
                     <div>
-                      <p className="text-sm font-medium">{providerLabels[pi.provider]}</p>
+                      <p className="text-sm font-medium">{setupStatus?.provider_labels?.[pi.provider] || providerLabels[pi.provider]}</p>
                       {pi.email && <p className="text-xs text-muted-foreground">{pi.email}</p>}
                       {pi.username && <p className="text-xs text-muted-foreground">@{pi.username}</p>}
                     </div>
@@ -183,7 +183,7 @@ export default function ProfilePage() {
                       >
                         <span className="mr-1.5">{providerIcons[p]}</span>
                         <Link2 className="h-3 w-3 mr-1" />
-                        {providerLabels[p]}
+                        {setupStatus?.provider_labels?.[p] || providerLabels[p]}
                       </Button>
                     ))}
                 </div>

@@ -152,7 +152,7 @@ export default function LoginPage() {
                 disabled={!!redirecting}
               >
                 {providerIcons[provider]}
-                {redirecting === provider ? 'Redirigiendo...' : providerLabels[provider] ?? `Continuar con ${provider}`}
+                {redirecting === provider ? 'Redirigiendo...' : (status?.provider_labels?.[provider] || providerLabels[provider] || `Continuar con ${provider}`)}
               </Button>
             ))}
           </CardContent>

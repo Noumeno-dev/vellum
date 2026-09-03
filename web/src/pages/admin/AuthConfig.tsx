@@ -173,14 +173,24 @@ function ProviderCard({
                   />
                 </div>
                 {name === 'oidc' && (
-                  <div className="space-y-1 sm:col-span-2">
-                    <Label className="text-xs">{t.adminAuth.issuerUrl}</Label>
-                    <Input
-                      value={cfg.issuer_url ?? ''}
-                      onChange={(e) => setCfg((prev) => ({ ...prev, issuer_url: e.target.value }))}
-                      placeholder="https://your-provider.com"
-                    />
-                  </div>
+                  <>
+                    <div className="space-y-1 sm:col-span-2">
+                      <Label className="text-xs">{t.adminAuth.issuerUrl}</Label>
+                      <Input
+                        value={cfg.issuer_url ?? ''}
+                        onChange={(e) => setCfg((prev) => ({ ...prev, issuer_url: e.target.value }))}
+                        placeholder="https://your-provider.com"
+                      />
+                    </div>
+                    <div className="space-y-1 sm:col-span-2">
+                      <Label className="text-xs">Nombre personalizado en botón (opcional)</Label>
+                      <Input
+                        value={cfg.display_name ?? ''}
+                        onChange={(e) => setCfg((prev) => ({ ...prev, display_name: e.target.value }))}
+                        placeholder="Ej. Mi Empresa"
+                      />
+                    </div>
+                  </>
                 )}
               </div>
               <Separator />

@@ -41,6 +41,7 @@ export interface AccessPolicy {
 export interface AuthProviderConfig {
   name: ProviderName
   enabled: boolean
+  display_name?: string
   client_id?: string
   client_secret?: string
   issuer_url?: string
@@ -196,6 +197,7 @@ export interface SetupStatus {
   auth_method: string
   oidc_enabled: boolean
   enabled_providers: ProviderName[]
+  provider_labels?: Record<ProviderName, string>
 }
 
 /** SMTP relay server configuration managed by administrators. */
